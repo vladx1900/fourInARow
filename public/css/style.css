@@ -1,0 +1,16 @@
+
+.gameTable {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url("../img/background.jpg") no-repeat;
+}
+
+#gameArea {
+    width:90%;
+    height: 80%;
+    background-color: aqua;
+    position: center;
+    margin-top: 4%;
+    border-radius: 5%;
+}
