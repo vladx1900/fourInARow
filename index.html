@@ -4,17 +4,37 @@
     <title>Four in a row</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="./public/css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 </head>
 <body>
 
 <div class="gameTable">
 
     <div class="container" id="gameArea">
+        <div style="float: left;">
+        <table class="table-rows">
+
+        </table>
+        </div>
+        <div class="players player-1">
+            <p>PLAYER 1</p>
+            <p>IONUT</p>
+        </div>
+        <div class="players player-2">
+            <p>PLAYER 2</p>
+            <p>CATALIN</p>
+        </div>
+
+        <button class="btn btn-primary buttons" id="newGame">New Game</button>
+        <br>
+        <button class="btn btn-secondary buttons" id="undo">Undo <i class="fa fa-undo" aria-hidden="true"></i></button>
 
     </div>
 
 </div>
 
+<script src="public/js/app.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 </body>
 </html>

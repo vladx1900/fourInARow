@@ -3,14 +3,80 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    background: url("../img/background.jpg") no-repeat;
+    background-image: url("../img/background.jpg")
 }
 
 #gameArea {
-    width:90%;
-    height: 80%;
-    background-color: aqua;
+    width: 1140px;
+    height: 750px;
+    background-color: slategrey;
     position: center;
     margin-top: 4%;
     border-radius: 5%;
+    padding-top: 5%;
+    padding-left: 2%;
 }
+
+.game-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    float: left;
+    background-color: darkgray;
+    display: inline-block;
+}
+
+.table-rows {
+   border: 5px solid #ffa500;
+    border-radius: 5%;
+    border-collapse: separate !important;
+}
+
+.players {
+     width: 150px;
+     height: 150px;
+     border: 5px solid #ffa500;
+     float:left;
+     margin-left: 20px;
+     padding-top: 20px;
+     text-align: center;
+     border-radius: 5%;
+     color: yellow;
+ }
+
+.red-circle {
+    background-color: red;
+}
+
+.blue-circle {
+    background-color: blue;
+}
+
+.last-move {
+    border: 5px solid yellow;
+}
+
+.arrow-circle {
+    background-image: url("../img/2.png");
+    background-size: cover;
+    overflow: hidden;
+}
+
+.player-1 {
+    background-color: red;
+}
+
+.player-2 {
+    background-color: blue;
+}
+
+.win-circle {
+    border: 5px solid green;
+}
+
+.buttons {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+
