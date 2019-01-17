@@ -17,12 +17,14 @@
         </table>
         </div>
         <div class="players player-1">
-            <p>PLAYER 1</p>
-            <p>IONUT</p>
+            <div class="input1">
+                <button class="btn btn-info">Player 1</button>
+            </div>
         </div>
         <div class="players player-2">
-            <p>PLAYER 2</p>
-            <p>CATALIN</p>
+            <div class="input2">
+                <button class="btn btn-info">Player 2</button>
+            </div>
         </div>
 
         <button class="btn btn-primary buttons" id="newGame">New Game</button>
@@ -35,6 +37,22 @@
 
 <script src="public/js/app.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="public/js/inline-edit.jquery.js"></script>
+
+<script>
+    $(".input1").inlineEdit({
+        type: 'text',
+        className: 'player-name'
+    });
+
+    $(".input2").inlineEdit({
+        type: 'text',
+        className: 'player-name'
+    });
+
+</script>
+
 
 </body>
 </html>

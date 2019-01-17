@@ -5,7 +5,9 @@ var UIController = (function() {
         gameCircle: '.game-circle',
         gameTable: '.table-rows',
         newGame: 'newGame',
-        undo: 'undo'
+        undo: 'undo',
+        player1: '.player-1',
+        player2: '.player-2'
     };
 
     return {
@@ -75,6 +77,8 @@ var controller = (function(UICtr) {
         activePlayer = 1;
         lastMove = [];
 
+        var DOM = UICtr.getDOMstrings();
+
         var gameCircles = document.querySelectorAll(UICtr.getDOMstrings().gameCircle);
         gameCircles.forEach(function (gameCircle) {
             gameCircle.classList.remove('red-circle');
@@ -82,11 +86,14 @@ var controller = (function(UICtr) {
             gameCircle.classList.remove('win-circle');
             gameCircle.classList.remove('last-move');
         });
+
+        document.querySelector(DOM.player1).classList.add('active-player');
+        document.querySelector(DOM.player2).classList.remove('active-player');
     };
 
     var undo = function() {
 
-        if (lastMove.length > 1) {
+        if (lastMove.length > 1 && gameOver === 0) {
             var element = document.getElementById(lastMove[lastMove.length - 1]);
             element.classList.remove('red-circle');
             element.classList.remove('blue-circle');
@@ -95,13 +102,20 @@ var controller = (function(UICtr) {
             lastMove.pop();
             var lastMoveElement = document.getElementById(lastMove[lastMove.length - 1]);
             lastMoveElement.classList.add('last-move');
+
+            var DOM = UICtr.getDOMstrings();
+            if (activePlayer === 1) {
+                activePlayer = 2;
+                document.querySelector(DOM.player1).classList.remove('active-player');
+                document.querySelector(DOM.player2).classList.add('active-player');
+            } else {
+                activePlayer = 1;
+                document.querySelector(DOM.player1).classList.add('active-player');
+                document.querySelector(DOM.player2).classList.remove('active-player');
+            }
         }
 
-        if (activePlayer === 1) {
-            activePlayer = 2;
-        } else {
-            activePlayer = 1;
-        }
+
     };
 
     var clickedCircle = function(circle) {
@@ -113,12 +127,17 @@ var controller = (function(UICtr) {
             aCircle = document.getElementById(row + '' + circle.srcElement.id%10);
 
             if (!aCircle.classList.contains('red-circle') && !aCircle.classList.contains('blue-circle') && aCircle.classList.contains('last-move')) {
+                var DOM = UICtr.getDOMstrings();
                 if (activePlayer === 1) {
                     aCircle.classList.add('red-circle');
                     activePlayer = 2;
+                    document.querySelector(DOM.player1).classList.remove('active-player');
+                    document.querySelector(DOM.player2).classList.add('active-player');
                 } else {
                     aCircle.classList.add('blue-circle');
                     activePlayer = 1;
+                    document.querySelector(DOM.player1).classList.add('active-player');
+                    document.querySelector(DOM.player2).classList.remove('active-player');
                 }
 
                 if (lastMove.length !== 0) {
@@ -149,43 +168,42 @@ var controller = (function(UICtr) {
 
         checkAllPossibilities: {
 
-            //right
-            if (column + 3 < 7) {
+            //right && left
+            {
                 isOver = 0;
 
-                for (index = column + 1; index <= column + 3; index++) {
+                index = column + 1;
+                targetElement = document.getElementById(row + '' + index);
+
+                while (index <= 6 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index++;
                     targetElement = document.getElementById(row + '' + index);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
                 }
 
-                if (isOver === 3) {
-                    for (index = column; index <= column + 3; index++) {
-                        targetElement = document.getElementById(row + '' + index);
-                        targetElement.classList.add('win-circle')
-                    }
-
-                    showWinner();
-                    break checkAllPossibilities;
-                }
-            }
-
-            //left
-            if (column - 3 >= 0) {
-                isOver = 0;
-
-                for (index = column - 1; index >= column - 3; index--) {
+                index = column - 1;
+                targetElement = document.getElementById(row + '' + index);
+                while (index >=0 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index--;
                     targetElement = document.getElementById(row + '' + index);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
                 }
 
-                if (isOver === 3) {
-                    for (index = column; index >= column - 3; index--) {
-                        targetElement = document.getElementById(row + '' + index);
+                if (isOver >= 3) {
+                    index = column;
+                    targetElement = document.getElementById(row + '' + index);
+                    while (index <= 6 && targetElement.classList.contains(circleType)) {
                         targetElement.classList.add('win-circle');
+                        index++;
+                        targetElement = document.getElementById(row + '' + index);
+                    }
+
+                    index = column - 1;
+                    targetElement = document.getElementById(row + '' + index);
+                    while (index >=0 && targetElement.classList.contains(circleType)) {
+                        targetElement.classList.add('win-circle');
+                        index--;
+                        targetElement = document.getElementById(row + '' + index);
                     }
 
                     showWinner();
@@ -194,20 +212,24 @@ var controller = (function(UICtr) {
             }
 
             //down
-            if (row + 3 <= 5) {
+            {
                 isOver = 0;
 
-                for (index = row + 1; index <= row + 3; index++) {
+                index = row + 1;
+                targetElement = document.getElementById(index + '' + column);
+                while (index <= 5 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index++;
                     targetElement = document.getElementById(index + '' + column);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
                 }
 
                 if (isOver === 3) {
-                    for (index = row; index <= row + 3; index++) {
+                    index = row;
+                    targetElement = document.getElementById(index + '' + column);
+                    while (index <= 5 && targetElement.classList.contains(circleType)) {
+                        targetElement.classList.add('win-circle');
+                        index++;
                         targetElement = document.getElementById(index + '' + column);
-                        targetElement.classList.add('win-circle');
                     }
 
                     showWinner();
@@ -215,27 +237,49 @@ var controller = (function(UICtr) {
                 }
             }
 
-            //NE
-            if (column + 3 <= 6 && row - 3 >= 0) {
+            //NE + SV
+            {
                 isOver = 0;
 
                 index2 = column + 1;
-                for (index = row - 1; index >= row - 3; index--) {
-                    targetElement = document.getElementById(index + '' + index2);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
-
+                index = row - 1;
+                targetElement = document.getElementById(index + '' + index2);
+                while (index >= 0 && index2 <= 6 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index--;
                     index2++;
+                    targetElement = document.getElementById(index + '' + index2);
+                }
+
+                index2 = column - 1;
+                index = row + 1;
+                targetElement = document.getElementById(index + '' + index2);
+                while (index <= 5 && index2 >= 0 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index++;
+                    index2--;
+                    targetElement = document.getElementById(index + '' + index2);
                 }
 
                 if (isOver === 3) {
                     index2 = column;
-                    for (index = row; index >= row - 3; index--) {
-                        targetElement = document.getElementById(index + '' + index2);
+                    index = row;
+                    targetElement = document.getElementById(index + '' + index2);
+                    while (index >= 0 && index2 <= 6 && targetElement.classList.contains(circleType)) {
                         targetElement.classList.add('win-circle');
-
+                        index--;
                         index2++;
+                        targetElement = document.getElementById(index + '' + index2);
+                    }
+
+                    index2 = column - 1;
+                    index = row + 1;
+                    targetElement = document.getElementById(index + '' + index2);
+                    while (index <= 5 && index2 >= 0 && targetElement.classList.contains(circleType)) {
+                        targetElement.classList.add('win-circle');
+                        index++;
+                        index2--;
+                        targetElement = document.getElementById(index + '' + index2);
                     }
 
                     showWinner();
@@ -243,88 +287,55 @@ var controller = (function(UICtr) {
                 }
             }
 
-            //SV
-            if (row + 3 <= 5 && column - 3 >= 0) {
+            //NV + SE
+            {
                 isOver = 0;
 
                 index2 = column - 1;
-                for (index = row + 1; index <= row + 3; index++) {
-                    targetElement = document.getElementById(index + '' + index2);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
-
+                index = row - 1;
+                targetElement = document.getElementById(index + '' + index2);
+                while (index >= 0 && index2 >= 0 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index--;
                     index2--;
-                }
-
-                if (isOver === 3) {
-                    index2 = column;
-                    for (index = row; index <= row + 3; index++) {
-                        targetElement = document.getElementById(index + '' + index2);
-                        targetElement.classList.add('win-circle');
-
-                        index2--;
-                    }
-
-                    showWinner();
-                    break checkAllPossibilities;
-                }
-            }
-
-            //NV
-            if (row - 3 >= 0 && column - 3 >= 0) {
-                isOver = 0;
-
-                index2 = column - 1;
-                for (index = row - 1; index >= row - 3; index--) {
                     targetElement = document.getElementById(index + '' + index2);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
-
-                    index2--;
                 }
-
-                if (isOver === 3) {
-                    index2 = column;
-                    for (index = row; index >= row - 3; index--) {
-                        targetElement = document.getElementById(index + '' + index2);
-                        targetElement.classList.add('win-circle');
-
-                        index2--;
-                    }
-
-                    showWinner();
-                    break checkAllPossibilities;
-                }
-            }
-
-            //SE
-            if (row + 3 <= 5 && column + 3 <= 6) {
-                isOver = 0;
 
                 index2 = column + 1;
-                for (index = row + 1; index <= row + 3; index++) {
-                    targetElement = document.getElementById(index + '' + index2);
-                    if (targetElement.classList.contains(circleType)) {
-                        isOver++;
-                    }
-
+                index = row + 1;
+                targetElement = document.getElementById(index + '' + index2);
+                while (index <= 5 && index2 <= 6 && targetElement.classList.contains(circleType)) {
+                    isOver++;
+                    index++;
                     index2++;
+                    targetElement = document.getElementById(index + '' + index2);
                 }
 
                 if (isOver === 3) {
                     index2 = column;
-                    for (index = row; index <= row + 3; index++) {
-                        targetElement = document.getElementById(index + '' + index2);
+                    index = row;
+                    targetElement = document.getElementById(index + '' + index2);
+                    while (index >= 0 && index2 >= 0 && targetElement.classList.contains(circleType)) {
                         targetElement.classList.add('win-circle');
+                        index--;
+                        index2--;
+                        targetElement = document.getElementById(index + '' + index2);
+                    }
 
+                    index2 = column + 1;
+                    index = row + 1;
+                    targetElement = document.getElementById(index + '' + index2);
+                    while (index <= 5 && index2 <= 6 && targetElement.classList.contains(circleType)) {
+                        targetElement.classList.add('win-circle');
+                        index++;
                         index2++;
+                        targetElement = document.getElementById(index + '' + index2);
                     }
 
                     showWinner();
                     break checkAllPossibilities;
                 }
+
             }
         }
     };
@@ -333,9 +344,15 @@ var controller = (function(UICtr) {
         gameOver = -1;
         setupEventListeners();
 
+        var DOM = UICtr.getDOMstrings();
+
         if (activePlayer === 1) {
+            document.querySelector(DOM.player1).classList.remove('active-player');
+            document.querySelector(DOM.player2).classList.add('active-player');
             swal('PLAYER 2 WON!!!');
         } else {
+            document.querySelector(DOM.player1).classList.add('active-player');
+            document.querySelector(DOM.player2).classList.remove('active-player');
             swal('PLAYER 1 WON!!!');
         }
     };
